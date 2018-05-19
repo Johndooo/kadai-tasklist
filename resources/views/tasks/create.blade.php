@@ -22,8 +22,11 @@
 
     <div class="clearfix"></div>
 
-                
-                {!! Form::submit('投稿', ['class' => 'btn btn-primary']) !!}
+    {!! Form::model($task, ['route' => 'tasks.store']) !!}
+
+        {!! Form::submit('タスク登録', ['class' => 'btn btn-success']) !!}
+
+    {!! Form::close() !!}
 </div>
 
 @endsection
