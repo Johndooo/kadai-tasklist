@@ -18,11 +18,17 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $users = User::paginate(10);
+        $user = User::find($id);
+
+        if (\Auth::user()->id === $user->user_id) {
+            $users = User::paginate(10);
         
-        return view('users.index', [
-            'users' => $users,
-        ]);
+            return view('users.index', [
+                'users' => $users,
+            ]);
+        }
+        
+        return redirect('/');
     }
 
     /**
@@ -35,12 +41,6 @@ class UsersController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         //
@@ -49,16 +49,21 @@ class UsersController extends Controller
     public function show($id)
     {
         $user = User::find($id);
-        $tasks = $user->tasks()->orderBy('created_at', 'desc')->paginate(10);
-
-        $data = [
-            'user' => $user,
-            'tasks' => $tasks,
-        ];
         
-        $data += $this->counts($user);
+        if (\Auth::user()->id === $user->user_id) {
+            $tasks = $user->tasks()->orderBy('created_at', 'desc')->paginate(10);
+    
+            $data = [
+                'user' => $user,
+                'tasks' => $tasks,
+            ];
+            
+            $data += $this->counts($user);
+            
+            return view('users.show', $data);
+        }
         
-        return view('users.show', $data);
+        return redirect('/');
     }
 
     /**
